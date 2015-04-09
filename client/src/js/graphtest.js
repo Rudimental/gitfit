@@ -81,7 +81,7 @@ var redefineChart1 = function(num){
 
 var redefineChart2 = function(num){
   var div = document.getElementById('chartDiv2');
-  chart2 = generateDailyCommits(num);
+  chart2 = generateDailySteps(num);
   div.removeChild(div.children[0]);
   div.appendChild(chart2.element);
 };
