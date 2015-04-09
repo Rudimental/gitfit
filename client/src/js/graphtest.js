@@ -73,19 +73,19 @@ var chart1 = generateDailyCommits(59);
 var chart2 = generateDailySteps(2384);
 
 var redefineChart1 = function(num){
-  var div = document.getElementById('chartDiv');
+  var div = document.getElementByClassName('commits-box');
   chart1 = generateDailyCommits(num);
   div.removeChild(div.children[0]);
   div.appendChild(chart1.element);
 };
 
 var redefineChart2 = function(num){
-  var div = document.getElementById('chartDiv2');
+  var div = document.getElementsByClassName('steps-box');
   chart2 = generateDailySteps(num);
   div.removeChild(div.children[0]);
   div.appendChild(chart2.element);
 };
 
 // $('#chartDiv').append(chart1.element);
-document.getElementById('chartDiv').appendChild(chart1.element);
-document.getElementById('chartDiv2').appendChild(chart2.element);
+document.getElementsByClassName('commits-box').appendChild(chart1.element);
+document.getElementsByClassName('steps-box').appendChild(chart2.element);
