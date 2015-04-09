@@ -73,7 +73,7 @@ var chart1 = generateDailyCommits(59);
 var chart2 = generateDailySteps(2384);
 
 var redefineChart1 = function(num){
-  var div = document.getElementByClassName('commits-box');
+  var div = document.getElementsByClassName('commits-box');
   chart1 = generateDailyCommits(num);
   div.removeChild(div.children[0]);
   div.appendChild(chart1.element);
@@ -87,5 +87,5 @@ var redefineChart2 = function(num){
 };
 
 // $('#chartDiv').append(chart1.element);
-document.getElementsByClassName('commits-box').appendChild(chart1.element);
-document.getElementsByClassName('steps-box').appendChild(chart2.element);
+document.getElementsByClassName('commits-box')[0].appendChild(chart1.element);
+document.getElementsByClassName('steps-box')[0].appendChild(chart2.element);
