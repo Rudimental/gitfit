@@ -34,11 +34,10 @@ var auth = {
         url: 'https://api.github.com/user',
       },
 
-      // 'github-getRepos': {
-      //   url: app.state.userInfo.github.reposUrl,
-      //   data: {access_token: app.state.userInfo.github.token},
-      //   //call get commits on each repo
-      // },
+      'github-getRepos': {
+        url: 'https://api.github.com/users/' + userAccounts.github.name + '/repos',
+        data: {access_token: userAccounts.github.accessToken}
+      },
 
       'jawbone-getToken': {
         uri: 'https://jawbone.com/auth/oauth2/token?client_id=' + keys.jawbone.clientID + 
@@ -90,8 +89,8 @@ var auth = {
                 return userAccounts;
               })
               .then(function(userAccounts){
-                console.log('userAccounts', userAccounts);
-                // deferredGet();
+                var githubUserParams = auth.assignReqParams('github', 'getRepos', userAccounts.github.accessToken);
+                deferredGet();
                 // userAccounts.github.user
               });
 
