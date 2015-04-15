@@ -98,12 +98,45 @@ var auth = {
               })
               .then(function(userAccounts){
                 var githubUserParams = auth.assignReqParams('github', 'getRepos', userAccounts);
-                var x = deferredGet(githubUserParams);
-                  return x;
+                // deferredGet(githubUserParams);
+                  deferredGet(githubUserParams)
+                  .then(function(body){
+                    console.log(JSON.parse(body[0].body));
+
+                    var reposList = [];
+
+                    JSON.parse(body[0].body).forEach(function(repo){
+                      reposList.push(repo.name);
+                    });
+                    console.log(reposList);
+
+                    
+                    // repos.forEach(function(repo) {
+                    // });
+                    // updateState({
+                    //   userInfo: {github: {
+                    //     repos: {$set: reposList}
+                    //   }}
+                    // });
+
+                    // userAccounts.github.reposList = reposList;
+
+                  });
+                  return userAccounts;
                 })
-              .then(function(x){
-                console.log('JSON.parse(x[0]["body"])', JSON.parse(x[0]["body"]));
-              });
+              // .then(function(userAccounts){
+              //   console.log(userAccounts);
+              //   console.log('JSON.parse(x[0]["body"])', JSON.parse(x[0]["body"]));
+
+
+              //   // console.log('Saved user repos: ', reposList);
+              //   // console.log('Confirm via log User');
+
+              //   app.state.userInfo.github.repos.forEach(function(repo) {
+              //     app.auth.makeRequest('github', 'commits', repo);
+              //   });
+
+              // });
 
               // get commits - adapt from app.jsx
                 // for each repo
