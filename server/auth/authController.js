@@ -1,4 +1,4 @@
- // Auth Controller
+// Auth Controller
 // ---------------
 //
 // The Auth controller handles requests passed from the User router.
@@ -12,6 +12,19 @@ var auth = {
   // This function assigns paramaters for an API request.
   assignReqParams: function(provider, usage, param){
     var call = provider + '-' + usage;
+    
+    if (call === 'github-getRepos'){
+      return {
+        // param: (function(){console.log('inside', param)})(),
+        url: 'https://api.github.com/users/' + param.github.user.username + '/repos',
+        data: {access_token: param.github.accessToken},
+        headers: {
+          'User-Agent': 'GitFit',
+          Authorization: 'token ' + param.github.accessToken
+        }
+      };
+    }
+
     var paramStore = {
       
       'github-getToken': {
@@ -32,11 +45,6 @@ var auth = {
           Authorization: 'token ' + param
         },
         url: 'https://api.github.com/user',
-      },
-
-      'github-getRepos': {
-        url: 'https://api.github.com/users/' + userAccounts.github.name + '/repos',
-        data: {access_token: userAccounts.github.accessToken}
       },
 
       'jawbone-getToken': {
@@ -89,9 +97,12 @@ var auth = {
                 return userAccounts;
               })
               .then(function(userAccounts){
-                var githubUserParams = auth.assignReqParams('github', 'getRepos', userAccounts.github.accessToken);
-                deferredGet();
-                // userAccounts.github.user
+                var githubUserParams = auth.assignReqParams('github', 'getRepos', userAccounts);
+                var x = deferredGet(githubUserParams);
+                  return x;
+                })
+              .then(function(x){
+                console.log('JSON.parse(x[0]["body"])', JSON.parse(x[0]["body"]));
               });
 
               // get commits - adapt from app.jsx
@@ -138,6 +149,7 @@ var auth = {
       }
     });
   },
+
 };
 
 module.exports = auth;
