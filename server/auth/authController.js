@@ -34,6 +34,12 @@ var auth = {
         url: 'https://api.github.com/user',
       },
 
+      // 'github-getRepos': {
+      //   url: app.state.userInfo.github.reposUrl,
+      //   data: {access_token: app.state.userInfo.github.token},
+      //   //call get commits on each repo
+      // },
+
       'jawbone-getToken': {
         uri: 'https://jawbone.com/auth/oauth2/token?client_id=' + keys.jawbone.clientID + 
           '&client_secret=' + keys.jawbone.clientSecret + 
@@ -56,6 +62,7 @@ var auth = {
     var tokenParams = auth.assignReqParams('github', 'getToken', userAccounts.github.code);
     var fitnessParams = auth.assignReqParams(userAccounts.fitness.provider, 'getToken', userAccounts.fitness.code);
     var deferredGet = Q.nfbind(request);
+
     deferredGet(tokenParams)
       .then(function(body){
         userAccounts.github.accessToken = body[0].body.access_token;
@@ -73,14 +80,27 @@ var auth = {
             deferredGet(githubUserParams)
               .then(function(body){
                 var parsedBody = JSON.parse(body[0].body);
-                console.log('JSON.Parse: body[0].body', JSON.parse(body[0].body));
+                // console.log('JSON.Parse: body[0].body', JSON.parse(body[0].body));
                 userAccounts.github.user = {
                   id: parsedBody.id,
                   username: parsedBody.login,
-                  name: parsedBody.name
+                  name: parsedBody.name,
+                  repos: parsedBody.repos_url
                 };
                 return userAccounts;
+              })
+              .then(function(userAccounts){
+                console.log('userAccounts', userAccounts);
+                // deferredGet();
+                // userAccounts.github.user
               });
+
+              // get commits - adapt from app.jsx
+                // for each repo
+                  // for each commit, they're stored by author - add those that have your username
+
+              // get overall steps from jawbone - adapt from app.jsx
+
               // get user info from jawbone
               // .then(function(userAccounts){
               //   var fitnessUserParams = auth.assignReqParams(userAccounts.fitness.provider, 'getUser', userAccounts.fitness.accessToken);
