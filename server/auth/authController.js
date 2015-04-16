@@ -11,12 +11,27 @@ var $ = require('jquery');
 var auth = {
   // This function assigns paramaters for an API request.
   assignReqParams: function(provider, usage, param){
-    var call = provider + '-' + usage;
-    
+    var call = provider + '-' + usage;    
     if (call === 'github-getRepos'){
       return {
         // param: (function(){console.log('inside', param)})(),
         url: 'https://api.github.com/users/' + param.github.user.username + '/repos',
+        data: {access_token: param.github.accessToken},
+        headers: {
+          'User-Agent': 'GitFit',
+          Authorization: 'token ' + param.github.accessToken
+        }
+      };
+    }
+    if (call === 'github-getCommits') {
+      return {
+        url: 'https://api.github.com/repos/' + param.github.user.username + '/' + param + '/commits?author=' + param.github.user.username,
+
+        // we need to only get today's commits here by adding something like the following:
+        // var formattedDate = YYYY-MM-DDTHH:MM:SSZ;
+        
+        //'&since=' + formattedDate;
+
         data: {access_token: param.github.accessToken},
         headers: {
           'User-Agent': 'GitFit',
@@ -101,28 +116,34 @@ var auth = {
                 // deferredGet(githubUserParams);
                   deferredGet(githubUserParams)
                   .then(function(body){
-                    console.log(JSON.parse(body[0].body));
+                    // console.log(JSON.parse(body[0].body));
 
                     var reposList = [];
+                    var commits = 0;
 
                     JSON.parse(body[0].body).forEach(function(repo){
                       reposList.push(repo.name);
                     });
-                    console.log(reposList);
 
-                    
-                    // repos.forEach(function(repo) {
-                    // });
-                    // updateState({
-                    //   userInfo: {github: {
-                    //     repos: {$set: reposList}
-                    //   }}
-                    // });
+                    reposList.forEach(function(repo) {
+                      console.log('repo', repo);
 
+                      // assign reqParams for repo
+                      var repoParams = auth.assignReqParams('github', 'getCommits', repo);
+
+                      // call get on repo
+                      deferredGet(repoParams);
+                      console.log('line 136');
+                      
+                      // go through commits 
+                    })
+                    // .then(function(x){
+                    //   console.log('x', x);
+                    // })
                     // userAccounts.github.reposList = reposList;
-
                   });
-                  return userAccounts;
+                  console.log('line 144!');
+                  // return userAccounts;
                 })
               // .then(function(userAccounts){
               //   console.log(userAccounts);
@@ -132,15 +153,9 @@ var auth = {
               //   // console.log('Saved user repos: ', reposList);
               //   // console.log('Confirm via log User');
 
-              //   app.state.userInfo.github.repos.forEach(function(repo) {
-              //     app.auth.makeRequest('github', 'commits', repo);
-              //   });
-
               // });
 
-              // get commits - adapt from app.jsx
-                // for each repo
-                  // for each commit, they're stored by author - add those that have your username
+              // for each commit, they're stored by author - add those that have your username
 
               // get overall steps from jawbone - adapt from app.jsx
 
